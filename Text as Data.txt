@@ -1,0 +1,29 @@
+Giavazzi, Francesco, et al. Terrorist Attacks, Cultural Incidents and the Vote for Radical Parties: Analyzing Text from Twitter. No. w26825. National Bureau of Economic Research, 2020.
+
+Python libraries: racists words on tweets, key words cloud pic on comparison between group, before and after the events
+
+Gentzkow, Matthew, Bryan Kelly, and Matt Taddy. "Text as data." Journal of Economic Literature 57.3 (2019): 535-74.
+
+# application
+## 1. Authorship
+## 2. Stock prices
+## 3. central bank communication
+## 4. nowcasting:  unemploy-ment,  retail  sales,  and  GDP, flu, corruption
+## 5. Policy uncertainty:  a  measure  of  economic  pol-icy  uncertainty  (EPU)  developed  by  Baker,  Bloom, and Davis (2016).
+## 6. Media slant
+## 7. market definition and innovation impact!!! Standard industry definitions can be an imperfect proxy for the economically  relevant  concept. After  establishing  an  industry  assignment  for   each  firm–year, v ˆi,   the   authors   examine the  effect  of  military  and  software  industry  shocks  to  competition  and  product  offerings  among  firms.  As  an  example,  they  find  that  the  events  of  September  11,  2001,  increased  entry  in  high-demand  military  markets  and  pushed   products   in   this   industry   toward   “   non-battlefield   information   gathering   and   products    intended    for    potential    ground    conflicts.”
+Kelly  et  al.  (2018)  use  cosine similarity among patent documents to create new indicators of patent quality. They assign higher quality to patents that are novelin that they have low similarity with the exist-ing stock of patents and are impactful in that they  have  high  similarity  with  subsequents patents.They then show that  text-based nov-elty  and  similarity  scores  correlate  strongly  with measures of market value.
+## 8. Topics in Research, Politics, and Law
+1. reduce the high dimensionality of the data: filtering  out  very  common  or  uncommon  words;  dropping  numbers,  punctuation,  or  proper  names;  and  restricting  attention  to  a  set  of  features  such  as  words  or  phrases  that  are  likely  to  be  especially  diagnostic
+2. feature selection:
+1. common  first  step  is  to  strip out elements of the raw text other than words
+2. filtering  out  very  common  or  uncommon  words
+3. stemming: replacing  words  with  their  root  such  that,  e.g.,  “economic,” “economics,” “economically” are all replaced by the stem “economic.”
+4. n-grams: "bag-of-words"
+3. text regression: high dimensionality makes OLS infeasible!
+- penalized linear models (Ridge, LASSO, Elastic net, log)
+- cross validation: AIC, BIC
+- non-linear text regression, deep learning (neural networks, which  typically  allow  the  inputs  to  act  on  the  response  through  one or more layers of interacting nonlinear basis functions, universal approximators, a theoretical result describing  their  ability  to  mimic  general,  smooth nonlinear associations.)
+- Bayesian regression methods
+- Generative language models
+- word embeddings: Instead  of  identifying  words  only  as  an  index  for  location  in  a  long  vocabulary  list,  imagine   representing   words   as   points   in   a  large  vector  space,  with  similar  words  colocated, and an internally consistent arith-metic on the space for relating words to one another.  
