@@ -26,5 +26,32 @@
 1. 去看那篇2011的文章，然后找出脏能源的关键词
 2. 处理数据： 需要整理申请时间而不是批准时间，首先先看单月批准的专利当中，申请时间的分布
 
+======================================================
+=============== 0610 ================================
+
+首先是所有Python code都有重复使用的机会，所以不要丢了。
+
+申请时间可以这样处理，需要用一个叫做datetime的包，没有的话你要去terminal那里pip install.
+======== 新开一个cell =====
+import datetime
+# 将5位数的日期转换为年月日
+df['appl_date'] = pd.to_datetime((df['appl_time'] - 25569) * 86400.0, unit='s')
+# head()是查看前五位，空括号的意思是df它“自己”
+df['appl_date'].head()
+======== 新开一个cell =====
+#提取年，将年转化为string
+df['appl_year'] = pd.DatetimeIndex(df['appl_date']).year
+df['appl_year']= df['appl_year'].astype(str)
+#提取月，将月份转化为string，注意不到两位数的要加个零，比如说1月要变成01，lambda x是python的一种写函数的写法
+df['appl_month'] = pd.DatetimeIndex(df['appl_date']).month
+df['appl_month'] = df['appl_month'].apply(lambda x:  '{0:0>2}'.format(x))
+#将年月合在一起，查看前五位
+df['appl_yearmonth'] = df['appl_year'] + df['appl_month']
+df['appl_yearmonth'].head()
+
+我觉得你可以在循环里面再套一个循环，就是我第一次写是f"num_{time}"，你上次加了省份变成f"num_{prov}_{time}"，然后现在再套一个循环变成f"num_{prov}_{time}_{appl_yearmonth}"
+
+等全部合到一起之后，再加到一起去。那么time就会消掉，appl_yearmonth才是重要的。
+
 
 
