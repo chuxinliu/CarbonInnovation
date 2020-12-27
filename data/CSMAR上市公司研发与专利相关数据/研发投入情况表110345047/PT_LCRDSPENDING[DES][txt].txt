@@ -1,0 +1,13 @@
+Symbol [证券代码] - 以上海交易所、深圳证券交易所公布的证券代码为准
+EndDate [统计截止日期] - YYYY-MM-DD，前四位表示会计报表公布年度
+StateTypeCode [报表类型] - 1=合并会计报表；2=母公司会计报表
+RDPerson [研发人员数量] - 研发人员数量
+RDPersonRatio [研发人员数量占比(%)] - 研发人员数量占比
+RDSpendSum [研发投入金额] - 研发投入金额
+RDSpendSumRatio [研发投入占营业收入比例(%)] - 研发投入占营业收入比例
+RDExpenses [研发投入(支出)费用化的金额] - 研发投入(支出)费用化的金额
+RDInvest [研发投入(支出)资本化的金额] - 研发投入(支出)资本化的金额
+RDInvestRatio [资本化研发投入(支出)占研发投入的比例(%)] - 资本化研发投入(支出)占研发投入的比例
+RDInvestNetprofitRatio [资本化研发投入(支出)占当期净利润的比重(%)] - 资本化研发投入(支出)占当期净利润的比重
+Currency [币种] - 
+Explanation [说明] - 
