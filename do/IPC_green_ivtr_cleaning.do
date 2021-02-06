@@ -75,6 +75,13 @@ replace group1_min = "53" in 581
 replace group1_max = "58" in 581
 drop hyphen1 hyphen2 min_group1 min_group2 max_group1 max_group2 copy
 drop split wide
-replace group2="" if group2==""
+replace group2="" if group2=="00"
 order green1 green2_3_4 IPC class subclass group1* group2*
 
+foreach i of varlist group1* group2* {
+destring `i', replace
+}
+
+su
+
+save "$root\data\workingdata\IPC_green_ivtr_cleaned.dta", replace
