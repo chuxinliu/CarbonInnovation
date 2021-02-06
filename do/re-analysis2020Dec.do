@@ -1,5 +1,5 @@
 /*
-# import and merge 5 files: patent_kw.dta, patent_adate, patent_pdate, patent_by, patent_prov
+# merge 5 files: patent_ipc.dta, patent_adate, patent_by, patent_prov, patent_prov1
 # clean merged.dta
 1. clean adate and pdate: generate adate, pdate, ayear, amonth, aday, pyear, pmonth, pday
 2. count total number of patents by province, year, person/firm/research
@@ -16,48 +16,29 @@ set more off
 global root = "F:\GitHub\CarbonInnovation"
 
 /* -----------------------------------------------------------------------------
-* import and merge 5 dta files: patent_kw, patent_adate, patent_pdate, patent_by, patent_prov
-cd C:\Users\chuxi\OneDrive\Documents\GitHub\CarbonInnovation\data\data_Dec2020
-import delimited patent_adate.csv, varnames(1) encoding(Big5) 
-save patent_adate.dta, replace
-clear
-import delimited patent_by.csv, varnames(1) encoding(Big5)
-save patent_by.dta, replace
-clear
-import delimited patent_kw.csv, varnames(1) encoding(UTF-8)
-save patent_kw.dta, replace
-clear
-import delimited patent_pdate.csv, varnames(1) encoding(Big5)
-save patent_pdate.dta, replace
-clear
-import delimited patent_prov.csv, varnames(1) encoding(UTF-8)
-save patent_prov.dta, replace
+*merge 5 files: patent_ipc.dta, patent_adate, patent_by, patent_prov, patent_prov1
 
-use "$root\data\data_Dec2020\patent_kw.dta", clear
-rename v2 kw
-merge 1:1 v1 using "$root\data\data_Dec2020\patent_adate.dta"
-drop _merge
+use "$root\data\data_Dec2020\patent_adate.dta", clear
 rename v2 adate
-merge 1:1 v1 using "$root\data\data_Dec2020\patent_pdate.dta"
-drop _merge
-rename v2 pdate
 merge 1:1 v1 using "$root\data\data_Dec2020\patent_by.dta"
 drop _merge
 rename v2 by
 merge 1:1 v1 using "$root\data\data_Dec2020\patent_prov.dta"
 drop _merge
 rename v2 prov
+codebook prov /* prov is missing for 2016 2017 */
+merge 1:1 v1 using "$root\data\data_Dec2020\patent_prov1.dta"
+drop _merge
+replace prov = prov1 if prov == ""
+drop prov1
+merge 1:1 v1 using "$root\data\data_Dec2020\patent_ipc.dta"
+drop _merge
+rename first_type_num ipc1
+rename second_type_num ipc2
 save "$root\data\data_Dec2020\merged.dta", replace
-*----------------------------------------------------------------------------*/
+*--------------------------------------------------------------------------*/
 
 use "$root\data\data_Dec2020\merged.dta", clear
-* provinces for 2016/17 are missing, here is the fix:
-merge 1:1 v1 using "$root\data\data_Dec2020\patent_prov1.dta"
-replace prov = prov1 if prov == ""
-drop prov1 _merge
-* keywords only contains 1, while some patents contain more than 1 keyword, here is the fix:
-merge 1:1 v1 using "$root\data\data_Dec2020\ip_kw.dta"
-drop _merge
 
 *1. clean adate and pdate: generate adate, pdate, ayear, amonth, aday, pyear, pmonth, pday
 
@@ -79,7 +60,7 @@ replace ayear = "1999"  if adate_2format3=="99"
 
 drop adate_raw adate1 adate2 adate_2format1 adate_2format2 adate_2format3
 
-
+/*
 split pdate, p(" ") gen(pdate)
 rename pdate pdate_raw
 * for those pdate2 == "00:00:00"
@@ -96,6 +77,7 @@ replace pmonth = pdate_2format2 if pdate2 != "00:00:00"
 replace pyear = "20" + pdate_2format3 if pdate2 != "00:00:00"
 
 drop pdate1 pdate2 pdate_2format1 pdate_2format2 pdate_2format3 pdate_raw
+*/
 
 /*2. count total number of patents by province, year, person/firm/research
 preserve
@@ -106,12 +88,53 @@ save "$root\data\workingdata\total_count.dta", replace
 restore
 */
 
-*3. keep only kw!=""
-keep if kw!=""
-split kw_multiple, gen(kw)
-su 
+*3. keep only ipc!=""
+tab ayear if ipc1!=""
+tab ayear if ipc2!=""
+keep if ipc1!="" | ipc2!=""
 
-*4. count selected number of patents by province, year, person/firm/research, keywords
+split ipc1, p(/) gen(ipc1_)
+gen len_1 = length(ipc1_1)
+tab len_1, m
+********** 
+gen subclass = substr(ipc1_1,1,4)
+**********
+gen group1 = ""
+gen group2 = ""
+replace group1 = substr(ipc1_1,5,1) if len_1==5
+replace group1 = substr(ipc1_1,5,2) if len_1==6
+replace group1 = substr(ipc1_1,5,3) if len_1==7
+split ipc1_1, gen(len9_)
+replace group1 = len9_2 if len_1==9
+drop len9*
+replace group1 = substr(ipc1_1,5,2) if len_1==8
+replace group1 = "487" if len_1==10
+replace group1 = "9" if len_1==17
+**********
+split ipc1_2, p("(2006") gen(ipc1_2006_)
+gen len_2006 = length(ipc1_2006_1)
+tab len_2006, m
+replace group2 = "00" in 2931362
+replace group2 = "08" in 3130190
+replace group2 = ipc1_2006_1 if len_2006==2
+replace group2 = "08" in 3208262
+replace group2 = ipc1_2006_1 if len_2006==3
+replace group2 = ipc1_2006_1 if len_2006==4
+replace group2 = ipc1_2006_1 if len_2006==5
+replace group2 = ipc1_2006_1 if len_2006==6
+foreach i of numlist 2007/2017 {
+split ipc1_2, p("(`i'") gen(ipc1_`i'_)
+codebook *`i'*
+replace group2 = ipc1_`i'_1 if ipc1_`i'_2!=""
+}
+replace group2 = substr(ipc1_1,7,2) if len_1==8
+replace group2 = "04" if len_1==10
+replace group2 = "04" if len_1==17
+
+codebook subclass group1 group2
+drop ipc1_* len* 
+
+/*4. count selected number of patents by province, year, person/firm/research, keywords
 *--------------- clean up similar keywords
 levelsof kw, local(kwlevels)
 foreach l of local kwlevels {
